@@ -10,6 +10,7 @@ extern "C" {
 #endif
 
 #include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
 
 #if defined(__cplusplus)
 }

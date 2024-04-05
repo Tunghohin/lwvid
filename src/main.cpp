@@ -1,11 +1,16 @@
+#include <boost/stacktrace.hpp>
 #include <future>
 #include <iostream>
-#include <lwvid/lwvid.h>
+#include <lwvid/lwvid.hpp>
+#include <memory>
 
-auto func(int x) -> void { std::cout << x << std::endl; }
+auto avformat_context_deleter(AVFormatContext* avfmt_ctx) -> void {
+    avformat_free_context(avfmt_ctx);
+}
 
 auto main() -> int {
-    auto f = std::async(std::launch::async, func, 2);
-    f.wait();
+    auto avfmt_ctx = avformat_alloc_context();
+    avformat_open_input(&avfmt_ctx, "../bunny_1080p_60fps.mp4", NULL, NULL);
+    std::cout << boost::stacktrace::stacktrace();
     return 0;
 }

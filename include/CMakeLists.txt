@@ -1,4 +1,4 @@
-file(GLOB_RECURSE srcs CONFIGURE_DEPENDS ./*.h)
+file(GLOB_RECURSE srcs CONFIGURE_DEPENDS ./*.h ./*.hpp)
 
 add_library(include SHARED ${srcs})
 
