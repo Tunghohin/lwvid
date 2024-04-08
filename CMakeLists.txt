@@ -1,51 +1,43 @@
 cmake_minimum_required(VERSION 3.14)
 
 if (NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE RelWithDebInfo)
+    set(CMAKE_BUILD_TYPE Release)
 endif()
 
-if (WIN32)
-    add_definitions(-DNOMINMAX -D_USE_MATH_DEFINES)
+if (UNIX AND NOT APPLE)
+    set(VCPKG_TARGET_TRIPLET "x64-linux")
+    set(CMAKE_TOOLCHAIN_FILE "~/vcpkg/scripts/buildsystems/vcpkg.cmake")
+    include(${CMAKE_TOOLCHAIN_FILE})
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_CREATE_STATIC_LIBRARY ON)
 
 project(lwvid LANGUAGES CXX VERSION 0.0.1)
 message("-- Project version: ${PROJECT_VERSION}")
-
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(LIBAV REQUIRED IMPORTED_TARGET
-    libavdevice
-    libavfilter
-    libavformat
-    libavcodec
-    libswresample
-    libswscale
-    libavutil
-)
-
-find_package(Boost 1.82.0 REQUIRED COMPONENTS
-    stacktrace_basic
-    stacktrace_backtrace
-    stacktrace_addr2line
-    stacktrace_noop
-)
+message("-- Build type: ${CMAKE_BUILD_TYPE}")
 
 file(GLOB_RECURSE deps CONFIGURE_DEPENDS ./src/*.cpp)
-add_subdirectory(include)
-add_executable(lwvid ${deps})
+add_executable(${PROJECT_NAME} ${deps})
 
-target_link_libraries(lwvid PRIVATE
-    include
-    PkgConfig::LIBAV
-    Boost::stacktrace_addr2line
+find_package(Boost REQUIRED
 )
-target_include_directories(lwvid PRIVATE
+
+find_package(fmt REQUIRED
+)
+
+find_package(FFMPEG REQUIRED
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    fmt::fmt
+    ${FFMPEG_LIBRARIES}
+)
+
+target_include_directories(${PROJECT_NAME} PRIVATE
     include
-    PkgConfig::LIBAV
-    Boost::stacktrace_addr2line
+    fmt::fmt
+    ${FFMPEG_INCLUDE_DIRS}
 )
