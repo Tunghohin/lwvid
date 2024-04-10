@@ -22,10 +22,10 @@ message("-- Build type: ${CMAKE_BUILD_TYPE}")
 file(GLOB_RECURSE deps CONFIGURE_DEPENDS ./src/*.cpp)
 add_executable(${PROJECT_NAME} ${deps})
 
-find_package(Boost REQUIRED
+find_package(fmt REQUIRED
 )
 
-find_package(fmt REQUIRED
+find_package(spdlog REQUIRED
 )
 
 find_package(FFMPEG REQUIRED
@@ -33,11 +33,13 @@ find_package(FFMPEG REQUIRED
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     fmt::fmt
+    spdlog::spdlog
     ${FFMPEG_LIBRARIES}
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     include
     fmt::fmt
+    spdlog::spdlog
     ${FFMPEG_INCLUDE_DIRS}
 )

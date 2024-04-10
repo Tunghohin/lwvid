@@ -3,10 +3,10 @@
 #include <iostream>
 #include <lwvid/lwvid.hpp>
 #include <memory>
+#include <spdlog/spdlog.h>
 
 auto main() -> int {
-    auto avfmt_context = avformat_alloc_context();
-    avformat_free_context(avfmt_context);
-    std::cout << boost::stacktrace::stacktrace();
+    fmt::println("{}", 2333);
+    spdlog::info("fff");
     return 0;
 }
